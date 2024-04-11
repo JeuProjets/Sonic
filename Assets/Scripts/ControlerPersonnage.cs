@@ -13,6 +13,7 @@ public class ControlerPersonnage : MonoBehaviour
     public float vitesseXMax;   //vitesse horizontale Maximale désirée
     float vitesseY;      //vitesse verticale 
     public float vitesseSaut;   //vitesse de saut désirée
+    bool estMort;
 
     /* Détection des touches et modification de la vitesse de déplacement;
        "a" et "d" pour avancer et reculer, "w" pour sauter
@@ -36,8 +37,11 @@ public class ControlerPersonnage : MonoBehaviour
             vitesseX = GetComponent<Rigidbody2D>().velocity.x;  //mémorise vitesse actuelle en X
         }
 
-        // sauter l'objet à l'aide la touche "w"
-        if (Input.GetKeyDown("w"))
+        // saut
+        Physics2D.OverlapCircle(transform.position, 0.2f);
+
+
+        if (Input.GetKeyDown("w") && Physics2D.OverlapCircle(transform.position, 0.2f))
         {
             vitesseY = vitesseSaut;
         }
@@ -66,10 +70,35 @@ public class ControlerPersonnage : MonoBehaviour
 
 
     }
-    void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        GetComponent<Animator>().SetBool("saut", false);
+        if(Physics2D.OverlapCircle(transform.position, 0.2f))
+        {
+            GetComponent<Animator>().SetBool("saut", false);
+        }
+        
+        if(infosCollision.gameObject.name == "Bombe")
+        {
+            GetComponent<Animator>().SetTrigger("mort");
+            estMort = true;
 
+            if(transform.position.x > infosCollision.transform.position.x)
+            {
+                GetComponent<Rigidbody2D>().velocity = new Vector2(20, 30);
+            }
+            else
+            {
+                GetComponent<Rigidbody2D>().velocity = new Vector2(-20, 30);
+            }
+            
+            Invoke("RelanceDuJeu", 2f);
+        }
+    }
+
+
+    private void RelaceDuJeu()
+    {
+        SceneManager.LoadScene("SonicDebut");
     }
 }
 

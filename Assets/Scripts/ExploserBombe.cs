@@ -20,8 +20,9 @@ public class ExploserBombe : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D infoCollision)
     {
         // Si le terrain est touché alors active l'animation de l'objet et détruit le
-        if (infoCollision.gameObject.name =="gazon")
+        if (infoCollision.gameObject.name =="Sonic")
         {
+            
             GetComponent<Animator>().enabled = true;
             Destroy(gameObject, 0.2f);
         }
